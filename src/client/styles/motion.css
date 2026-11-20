@@ -1,0 +1,72 @@
+/* ============================================================================
+   Motion system. The contract:
+     · html.js         — boot.js ran (JS available)
+     · html.motion-ok  — visitor allows motion (prefers-reduced-motion is not
+                         'reduce'); the ONLY class that may hide content
+   No-JS and reduced-motion visitors always see a fully visible page — every
+   hide-before-reveal rule is gated on html.motion-ok, and the kill block at
+   the bottom of this file is the second belt.
+   ========================================================================== */
+
+/* ── Keyframes shared across components ────────────────────────────────── */
+@keyframes msg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes dots { 0% { content: "·"; } 33% { content: "··"; } 66% { content: "···"; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+html.motion-ok .chat-msg { animation: msg-in 0.5s var(--ease-out) both; }
+.chat-msg__dots::after { content: "···"; }
+html.motion-ok .chat-msg__dots::after { animation: dots 1.4s steps(4) infinite; }
+
+/* ── Scroll-reveal (decorated by motion/reveal.ts) ─────────────────────── */
+html.motion-ok .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+html.motion-ok .reveal.is-revealed { opacity: 1; transform: none; }
+html.motion-ok .reveal[data-delay="1"] { transition-delay: 0.08s; }
+html.motion-ok .reveal[data-delay="2"] { transition-delay: 0.16s; }
+html.motion-ok .reveal[data-delay="3"] { transition-delay: 0.24s; }
+html.motion-ok .reveal[data-delay="4"] { transition-delay: 0.32s; }
+html.motion-ok .reveal[data-delay="5"] { transition-delay: 0.40s; }
+
+/* Hairline rules that draw themselves in on reveal. */
+html.motion-ok .rule-draw { transform: scaleX(0); transform-origin: left center; transition: transform 0.9s var(--ease-out); }
+html.motion-ok .rule-draw.is-revealed { transform: scaleX(1); }
+
+/* ── Lenis smooth scrolling ────────────────────────────────────────────── */
+/* core.css sets html { scroll-behavior: smooth } — hand control to Lenis
+   whenever it is driving. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ── Cross-document View Transitions (progressive enhancement) ─────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  @keyframes vt-out { to { opacity: 0; transform: translateY(-6px); } }
+  @keyframes vt-in { from { opacity: 0; transform: translateY(10px); } }
+  ::view-transition-old(root) { animation: vt-out 0.18s var(--ease) both; }
+  ::view-transition-new(root) { animation: vt-in 0.26s var(--ease-out) both; }
+
+  /* The nav bar persists across page swaps instead of fading. */
+  .topbar { view-transition-name: topbar; }
+}
+
+/* ── Reduced motion: kill everything, reveal everything ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .rule-draw { opacity: 1 !important; transform: none !important; }
+  .meter__fill { right: calc(100% - var(--pct)) !important; }
+  .chart-line--draw { stroke-dashoffset: 0 !important; }
+  .chart-area { opacity: 1 !important; }
+}

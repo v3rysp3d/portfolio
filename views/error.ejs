@@ -1,0 +1,15 @@
+<%- include('partials/head', { nav: 'public', bodyClass: 'page-error' }) %>
+
+<section class="section section--top error-page">
+  <p class="eyebrow animate-rise">
+    <span class="eyebrow__index">Error</span><span class="eyebrow__label"><%= status %></span>
+  </p>
+  <h1 class="page-title animate-rise"><%= status === 404 ? 'Page not found' : 'Something went wrong' %></h1>
+  <p class="page-subtitle animate-rise"><%= message %></p>
+  <div class="hero__actions animate-rise">
+    <a href="/" class="btn btn--accent">Back home</a>
+    <a href="/projects" class="btn btn--ghost">View projects</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

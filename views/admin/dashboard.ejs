@@ -1,0 +1,59 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin">
+  <header class="admin__head">
+    <h1 class="admin__title">Dashboard</h1>
+    <p class="admin__subtitle">Signed in as <strong><%= currentUser.username %></strong>.</p>
+  </header>
+
+  <div class="stat-cards">
+    <a class="stat-card" href="/admin/projects">
+      <span class="stat-card__value"><%= stats.projects %></span>
+      <span class="stat-card__label">Projects</span>
+      <span class="stat-card__sub"><%= stats.visibleProjects %> visible</span>
+    </a>
+    <a class="stat-card" href="/admin/experience">
+      <span class="stat-card__value"><%= stats.experiences %></span>
+      <span class="stat-card__label">Experience</span>
+    </a>
+    <a class="stat-card" href="/admin/skills">
+      <span class="stat-card__value"><%= stats.skills %></span>
+      <span class="stat-card__label">Skills</span>
+    </a>
+    <a class="stat-card stat-card--accent" href="/admin/projects/new">
+      <span class="stat-card__value">+</span>
+      <span class="stat-card__label">New project</span>
+    </a>
+  </div>
+
+  <section class="admin__panel">
+    <div class="admin__panel-head">
+      <h2 class="admin__panel-title">Recent projects</h2>
+      <a class="btn btn--ghost btn--sm" href="/admin/projects">Manage all</a>
+    </div>
+
+    <% if (recentProjects.length === 0) { %>
+      <p class="empty">No projects yet. <a href="/admin/projects/new">Add your first</a>.</p>
+    <% } else { %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Title</th><th>Category</th><th>Featured</th><th>Visible</th></tr>
+          </thead>
+          <tbody>
+            <% recentProjects.forEach(function (p) { %>
+              <tr>
+                <td><a class="data-table__title" href="/admin/projects/<%= p.id %>/edit"><%= p.title %></a></td>
+                <td class="muted"><%= p.category || '—' %></td>
+                <td><%= p.featured ? 'Yes' : '—' %></td>
+                <td><%= p.visible ? 'Yes' : 'Hidden' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </section>
+</section>
+
+<%- include('../partials/footer') %>

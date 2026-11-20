@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interviewing Nathan Burr · AI</title>
+  <meta name="description" content="A streaming, model-routed, guardrailed interview AI grounded in Nathan Burr's real CV." />
+  <link rel="stylesheet" href="mock.css" />
+</head>
+<body class="page-interview-chat">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="crosshair" aria-hidden="true"></div>
+  <div class="mock-banner">MOCKUP · AI ENGINEERING SHOWCASE · <a href="index.html">all surfaces ↗</a></div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="monogram" href="index.html"><span class="monogram__mark">NB</span> Nathan Burr</a>
+      <nav class="topnav" aria-label="Primary">
+        <a href="index.html">Work</a>
+        <a href="interview.html" class="is-active" aria-current="page">Interview</a>
+        <a href="lab.html" class="topnav__link--accent">Lab</a>
+        <a href="red-team.html">Red-team</a>
+        <a href="#">Contact</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="main" id="main">
+    <section class="chat">
+      <!-- Head -->
+      <div class="chat__head reveal">
+        <div>
+          <h1 class="chat__title">Interviewing Nathan Burr<span class="chat__ai"> · AI</span></h1>
+          <p class="chat__subtitle">A streaming AI grounded in Nathan's real CV — model-routed, guardrailed, and cost-capped. Ask it anything; it escalates the hard turns.</p>
+        </div>
+        <div class="chat__head-side">
+          <button class="btn btn--ghost btn--sm" data-ai-info>⌗ How this AI works</button>
+          <span class="chat__counter"><span class="chat__counter-num">12</span><span class="chat__counter-label">questions left</span></span>
+          <span class="chat__cost"><a href="lab.html">§LAB</a> <span class="chat__cost-now" data-cost-now="0.0143">$0.0143</span> / $20·mo</span>
+        </div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="suggestions reveal" data-delay="1">
+        <p class="suggestions__label">Try asking:</p>
+        <div class="suggestions__chips">
+          <button class="suggestion-chip" data-q="Walk me through the hardest reliability bug you fixed.">Hardest reliability bug?</button>
+          <button class="suggestion-chip" data-q="What does your day-to-day stack look like?">Your day-to-day stack?</button>
+          <button class="suggestion-chip" data-q="How do you approach a problem you've never seen before?">Approaching the unknown?</button>
+          <button class="suggestion-chip suggestion-chip--ai" data-q="How does the router decide between Haiku and Sonnet?">How does routing work?</button>
+          <button class="suggestion-chip suggestion-chip--ai" data-q="What guardrails stop prompt injection in this chat?">What stops prompt injection?</button>
+          <button class="suggestion-chip suggestion-chip--ai" data-q="How is the per-conversation cost kept under budget?">How is cost capped?</button>
+        </div>
+      </div>
+
+      <!-- Log (mock.js streams the conversation) -->
+      <div class="chat__log" data-sim-chat></div>
+
+      <!-- Composer -->
+      <form class="chat__composer" action="#">
+        <label class="sr-only" for="chat-input">Ask the interview AI a question</label>
+        <textarea class="input textarea chat__input" id="chat-input" data-chat-input placeholder="Ask about a project, the stack, or how this AI is built…"></textarea>
+        <button type="submit" class="btn btn--accent chat__send">Send</button>
+      </form>
+      <p class="chat__note">Rate-limited demo · 1 req / 10s · 30 / hr — see the evals at <a href="lab.html">§LAB →</a></p>
+    </section>
+  </main>
+
+  <!-- "How this AI works" modal -->
+  <div class="modal" data-ai-modal hidden>
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+      <button class="modal__close" data-modal-close aria-label="Close">×</button>
+      <h2 class="modal__title" id="ai-modal-title">How this interview AI is built</h2>
+      <p class="modal__lead">Your question is classified, routed to the cheapest model that can answer it well, passed through guardrails, and graded against a CI eval set on every prompt-version change.</p>
+
+      <div class="arch-flow">
+        <div class="arch-node">
+          <span class="arch-node__icon" aria-hidden="true">◎</span>
+          <span class="arch-node__title">You</span>
+          <span class="arch-node__sub">question + rate limit</span>
+        </div>
+        <div class="arch-arrow" aria-hidden="true"></div>
+        <div class="arch-node arch-node--accent">
+          <span class="arch-node__icon" aria-hidden="true">⌥</span>
+          <span class="arch-node__title">Router</span>
+          <span class="arch-node__sub">Haiku → Sonnet on hard</span>
+        </div>
+        <div class="arch-arrow" aria-hidden="true"></div>
+        <div class="arch-node">
+          <span class="arch-node__icon" aria-hidden="true">⌗</span>
+          <span class="arch-node__title">Guardrails</span>
+          <span class="arch-node__sub">injection · scope · PII</span>
+        </div>
+        <div class="arch-arrow" aria-hidden="true"></div>
+        <div class="arch-node">
+          <span class="arch-node__icon" aria-hidden="true">✦</span>
+          <span class="arch-node__title">Claude</span>
+          <span class="arch-node__sub">Haiku, CV-grounded</span>
+        </div>
+        <div class="arch-arrow" aria-hidden="true"></div>
+        <div class="arch-node">
+          <span class="arch-node__icon" aria-hidden="true">▣</span>
+          <span class="arch-node__title">Evals</span>
+          <span class="arch-node__sub">CI golden set</span>
+        </div>
+      </div>
+
+      <p class="modal__section-label">Engineering guardrails</p>
+      <div class="arch-pills">
+        <span class="pill">Injection-refusal preamble</span>
+        <span class="pill">Scope re-anchor</span>
+        <span class="pill">No transcripts · no PII</span>
+        <span class="pill">Prompt caching</span>
+        <span class="pill">Per-conversation cost cap</span>
+        <span class="pill">CI eval gate ≥ 90</span>
+      </div>
+
+      <p class="modal__foot">Aggregate metrics are published openly at <a href="lab.html">§LAB</a>, and every defeated attack is documented in the <a href="red-team.html">red-team report</a>.</p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <span>© 2026 Nathan Burr</span>
+      <span>Built with Node · TypeScript · Claude · evaluated in CI</span>
+    </div>
+  </footer>
+
+  <script src="mock.js" defer></script>
+</body>
+</html>

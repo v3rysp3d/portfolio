@@ -1,0 +1,8 @@
+# Caddy reverse proxy with automatic HTTPS.
+# SITE_ADDRESS is supplied by docker-compose:
+#   - a domain (interview.example.com) → Caddy provisions a Let's Encrypt cert
+#   - ":80"                            → plain HTTP, for a local smoke test
+{$SITE_ADDRESS} {
+	encode zstd gzip
+	reverse_proxy app:3000
+}

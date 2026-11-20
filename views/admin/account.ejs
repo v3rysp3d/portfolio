@@ -1,0 +1,40 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin admin--narrow">
+  <header class="admin__head">
+    <h1 class="admin__title">Account</h1>
+    <p class="admin__subtitle">Signed in as <strong><%= currentUser.username %></strong>.</p>
+  </header>
+
+  <% if (errors._) { %><div class="form-error form-error--banner"><%= errors._ %></div><% } %>
+
+  <form method="post" action="/admin/account/password" class="form form--card" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <h2 class="form__section-title">Change password</h2>
+
+    <div class="field">
+      <label class="field__label" for="currentPassword">Current password</label>
+      <input class="input" id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required />
+      <% if (errors.currentPassword) { %><p class="form-error"><%= errors.currentPassword %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="newPassword">New password</label>
+      <input class="input" id="newPassword" name="newPassword" type="password" autocomplete="new-password" required />
+      <p class="field__hint">At least 12 characters.</p>
+      <% if (errors.newPassword) { %><p class="form-error"><%= errors.newPassword %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="confirmPassword">Confirm new password</label>
+      <input class="input" id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required />
+      <% if (errors.confirmPassword) { %><p class="form-error"><%= errors.confirmPassword %></p><% } %>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--accent">Change password</button>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

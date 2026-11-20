@@ -1,0 +1,44 @@
+# CI: build + the AI-quality gate. Runs entirely free — the eval job uses the
+# offline stub provider + deterministic judge (no ANTHROPIC_API_KEY in CI), so
+# it verifies plumbing and the guardrail-enforced safety behaviour on every
+# push. Publishing a run to /lab stays a deliberate act: commit the JSON.
+name: ci
+
+on:
+  push:
+    branches: [main, v2-rebuild]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+
+  eval-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      # Fresh SQLite; the seeded admin password is ephemeral and discarded.
+      - run: npm run seed
+      - name: Offline eval gate (stub model, deterministic judge, $0)
+        run: EVAL_STRICT=1 npm run eval
+      - name: Upload run artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-run
+          path: eval-runs/*.json
+          if-no-files-found: warn

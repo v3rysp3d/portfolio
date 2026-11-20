@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Ink canvas -->
+  <rect width="1200" height="630" fill="#0b0c0f"/>
+
+  <!-- Blueprint grid -->
+  <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <path d="M0 105H1200M0 210H1200M0 315H1200M0 420H1200M0 525H1200"/>
+    <path d="M120 0V630M240 0V630M360 0V630M480 0V630M600 0V630M720 0V630M840 0V630M960 0V630M1080 0V630"/>
+  </g>
+
+  <!-- Accent glow, top right -->
+  <radialGradient id="glow" cx="0.85" cy="0" r="0.9">
+    <stop offset="0" stop-color="#ff6a2c" stop-opacity="0.22"/>
+    <stop offset="0.6" stop-color="#ff6a2c" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Topographic contours, lower band -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.5">
+    <path d="M-20,560 C240,520 420,570 640,535 S1000,485 1220,525"/>
+    <path d="M-20,520 C260,465 460,525 680,480 S1020,430 1220,470"/>
+    <path d="M-20,482 C220,420 500,480 720,428 S1040,378 1220,415"/>
+  </g>
+  <path d="M-20,446 C280,375 540,435 800,378 S1060,330 1220,360"
+        fill="none" stroke="#ff6a2c" stroke-opacity="0.75" stroke-width="2"/>
+
+  <!-- Eyebrow -->
+  <text x="96" y="150" font-family="Consolas, Menlo, monospace" font-size="26" letter-spacing="8" fill="#ff6a2c">&#167;00</text>
+  <text x="196" y="150" font-family="Consolas, Menlo, monospace" font-size="26" letter-spacing="8" fill="#80848c">PORTFOLIO / AUCKLAND, NZ</text>
+
+  <!-- Name -->
+  <text x="90" y="280" font-family="Georgia, 'Times New Roman', serif" font-size="104" fill="#ecebe6">Nathan Burr</text>
+
+  <!-- Headline -->
+  <text x="96" y="356" font-family="Georgia, 'Times New Roman', serif" font-size="42" fill="#b9bbc0">Software Engineer &amp; AI Implementation Specialist</text>
+
+  <!-- Signal underline -->
+  <rect x="96" y="392" width="150" height="4" fill="#ff6a2c"/>
+
+  <!-- Footer chips -->
+  <g font-family="Consolas, Menlo, monospace" font-size="22" letter-spacing="4">
+    <text x="96" y="598" fill="#80848c">TYPESCRIPT &#183; RUST &#183; KOTLIN &#183; C++</text>
+    <text x="760" y="598" fill="#ff6a2c">INTERVIEW MY AI SELF &#8599;</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<article class="project-card animate-rise">
+  <a class="project-card__link" href="/projects/<%= project.slug %>">
+    <div class="project-card__head">
+      <span class="project-card__index"><%= helpers.indexLabel(index) %></span>
+      <span class="project-card__meta">
+        <% if (project.category) { %><span class="project-card__cat"><%= project.category %></span><% } %>
+        <% if (typeof project.visible !== 'undefined' && !project.visible) { %><span class="badge badge--hidden">Hidden</span><% } %>
+      </span>
+    </div>
+
+    <h3 class="project-card__title"><%= project.title %></h3>
+    <p class="project-card__summary"><%= project.summary %></p>
+
+    <div class="project-card__foot">
+      <ul class="tech-list">
+        <% project.techStack.slice(0, 5).forEach(function (t) { %>
+          <li class="tech-list__item"><%= t %></li>
+        <% }); %>
+        <% if (project.techStack.length > 5) { %>
+          <li class="tech-list__item tech-list__item--more">+<%= project.techStack.length - 5 %></li>
+        <% } %>
+      </ul>
+      <span class="project-card__cta">View <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>

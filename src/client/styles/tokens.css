@@ -1,0 +1,61 @@
+/* ============================================================================
+   Design tokens — the single source of truth for the "Engineering Editorial"
+   identity. Everything else consumes these custom properties.
+   ========================================================================== */
+
+:root {
+  /* Canvas + hairlines */
+  --ink:        #0b0c0f;
+  --ink-1:      #0f1116;
+  --ink-2:      #14171d;
+  --ink-3:      #191d24;
+  --line:       rgba(255, 255, 255, 0.10);
+  --line-2:     rgba(255, 255, 255, 0.16);
+  --line-3:     rgba(255, 255, 255, 0.24);
+
+  /* Ink-on-ink text ramp */
+  --text:       #ecebe6;
+  --text-2:     #b9bbc0;
+  --muted:      #80848c;
+  --faint:      #5b5f67;
+
+  /* The one signal accent + status colors */
+  --accent:     #ff6a2c;
+  --accent-2:   #ff8c5a;
+  --accent-ink: #100a06;
+  --danger:     #ff5a5a;
+  --ok:         #4fd08a;
+  --warn:       #ffc24b;
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Geometry */
+  --maxw: 1140px;
+  --pad: clamp(1.25rem, 4.5vw, 3.25rem);
+  --radius: 4px;
+  --radius-lg: 8px;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.25rem;
+  --space-7: 3.5rem;
+  --space-8: 5rem;
+
+  /* Z-scale */
+  --z-bg: 0;
+  --z-content: 2;
+  --z-nav: 40;
+  --z-modal: 60;
+  --z-skip: 100;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

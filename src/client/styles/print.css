@@ -1,0 +1,92 @@
+/*
+ * Print stylesheet — loaded with media="print". Flips the ink-dark design
+ * tokens to a clean light document so printing /cv produces a professional
+ * single-accent CV ("the PDF"); every other page prints legibly too.
+ */
+@page { size: A4; margin: 14mm 15mm; }
+
+@media print {
+  :root {
+    --ink: #ffffff;
+    --ink-1: #ffffff;
+    --ink-2: #f6f5f2;
+    --ink-3: #efeee9;
+    --line: rgba(0, 0, 0, 0.14);
+    --line-2: rgba(0, 0, 0, 0.24);
+    --line-3: rgba(0, 0, 0, 0.36);
+    --text: #14151a;
+    --text-2: #3c3f46;
+    --muted: #6a6e76;
+    --faint: #90949c;
+    --accent: #c2551f; /* darker signal orange for paper contrast */
+    --accent-2: #a34517;
+    --accent-ink: #ffffff;
+
+    /* Drop the custom faces (Fraunces / IBM Plex) for print — a printed CV
+       should read as a clean, conventional document in standard system fonts. */
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+    --font-mono: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  }
+
+  html { scroll-behavior: auto; background: #fff; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+
+  /* Atmosphere + chrome off the page. */
+  body::before,
+  body::after,
+  .grid-overlay,
+  .grid-spotlight,
+  .crosshair,
+  .cursor,
+  .hero-visual,
+  .topbar,
+  .site-footer,
+  .nav-toggle,
+  .skip-link,
+  .flash-stack,
+  .cv-header__actions,
+  .cv-header__stats,
+  .cv .section__action,
+  .suggestions,
+  .chat__composer {
+    display: none !important;
+  }
+
+  /* Reveal-gated content must always print. */
+  .reveal, .rule-draw { opacity: 1 !important; transform: none !important; }
+
+  a { color: inherit; }
+  .section { padding-block: 1.1rem; }
+  .hero__stats dd { color: var(--text); }
+  .cv .section { padding-block: 0.75rem; }
+  .section--top, .cv-header { padding-top: 0; }
+
+  /* ── CV as a two-page document ───────────────────────────────────────── */
+  .cv-header { padding-bottom: 0.6rem; }
+  .cv-header__name { font-size: 24pt; margin-top: 0.3rem; }
+  .cv-header__headline { font-size: 12pt; margin-top: 0.25rem; }
+  .cv-header__links { margin-top: 0.6rem; gap: 0.3rem 1.6rem; }
+  .cv .section__head { margin-bottom: 0.55rem; }
+  .cv .section__title { font-size: 15pt; }
+  .cv .prose--lead p { font-size: 10.5pt; line-height: 1.45; margin-bottom: 0.45rem; }
+  .cv-timeline, .cv-projects { gap: 0.7rem; }
+  .cv-entry { grid-template-columns: 8.5rem 1fr; gap: 0.9rem; }
+  .cv-entry__role, .cv-project__title { font-size: 12pt; }
+  .cv-entry__org { font-size: 10pt; }
+  .cv-entry__summary, .cv-project__summary { margin-top: 0.25rem; max-width: none; font-size: 10pt; }
+  .cv-project .tech-list { margin-top: 0.35rem; }
+  .skills-grid { grid-template-columns: 1fr 1fr; gap: 0.7rem 1.6rem; }
+  .skill-group__title { padding-bottom: 0.3rem; margin-bottom: 0.45rem; }
+  .tag-list { gap: 0.3rem; }
+  .tag { font-size: 9pt; padding: 0.15rem 0.45rem; background: none; }
+  .tech-list__item { font-size: 8pt; }
+
+  /* Wide tracking on the small caps labels makes PDF text extraction (and so
+     applicant-tracking parsers) split words into loose letters. */
+  .eyebrow, .footer-link__key, .cv-entry__period, .cv-project__meta,
+  .skill-group__title, .section__index { letter-spacing: 0.02em; }
+
+  .cv-entry, .cv-project, .skill-group { break-inside: avoid; }
+  .section__head { break-after: avoid; }
+}

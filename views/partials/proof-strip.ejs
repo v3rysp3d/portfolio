@@ -1,0 +1,13 @@
+<%# Live-metrics strip that is ONE link into /lab (single tab stop; the tile
+    grid is aria-hidden decoration, the accessible name carries the numbers).
+    Params: { tiles: ProofTile[] } %>
+<a class="proof-strip" href="/lab"
+   aria-label="Live from the lab: <%= tiles.map((t) => `${t.label} ${t.value}`).join(', ') %>. Open the full dashboard.">
+  <span class="proof-strip__cap"><span>LIVE FROM THE LAB</span><span class="accent">§LAB ↗</span></span>
+  <span class="stat-cards" aria-hidden="true">
+    <% tiles.forEach((tile, i) => { %>
+      <%- include('stat-card', { tile, delay: i }) %>
+    <% }) %>
+  </span>
+  <span class="proof-strip__foot"><span>NO TRANSCRIPTS · AGGREGATES ONLY</span><span>EVERY NUMBER TRACES TO A COMMITTED RUN</span></span>
+</a>

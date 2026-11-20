@@ -1,0 +1,38 @@
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <span class="site-footer__name"><%= profile.name %></span>
+        <% if (profile.headline) { %><span class="site-footer__headline"><%= profile.headline %></span><% } %>
+      </div>
+
+      <div class="site-footer__links">
+        <% if (profile.email) { %>
+          <a href="mailto:<%= profile.email %>" class="footer-link"><span class="footer-link__key">email</span><%= profile.email %></a>
+        <% } %>
+        <% if (profile.githubUrl) { %>
+          <a href="<%= profile.githubUrl %>" target="_blank" rel="noopener noreferrer" class="footer-link"><span class="footer-link__key">github</span><%= helpers.displayHost(profile.githubUrl) %></a>
+        <% } %>
+        <% if (profile.linkedinUrl) { %>
+          <a href="<%= profile.linkedinUrl %>" target="_blank" rel="noopener noreferrer" class="footer-link"><span class="footer-link__key">linkedin</span><%= helpers.displayUrl(profile.linkedinUrl) %></a>
+        <% } %>
+        <% if (profile.websiteUrl) { %>
+          <a href="<%= profile.websiteUrl %>" target="_blank" rel="noopener noreferrer" class="footer-link"><span class="footer-link__key">web</span><%= helpers.displayHost(profile.websiteUrl) %></a>
+        <% } %>
+      </div>
+
+      <div class="site-footer__meta">
+        <span>© <%= currentYear %> <%= profile.name %></span>
+        <span class="site-footer__sep">/</span>
+        <span>Built with Node, TypeScript &amp; SQLite</span>
+        <span class="site-footer__sep">/</span>
+        <a href="/admin" class="site-footer__admin">Admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <% const footerNav = (typeof nav !== 'undefined') ? nav : 'public'; %>
+  <script type="module" src="<%= asset(footerNav === 'admin' ? 'admin.js' : 'app.js') %>"></script>
+</body>
+</html>

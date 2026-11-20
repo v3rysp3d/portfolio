@@ -1,0 +1,78 @@
+<%- include('../../partials/head', { nav: 'public', bodyClass: 'page-interview' }) %>
+
+<section class="hero hero--compact">
+  <div class="hero__inner">
+    <p class="eyebrow animate-rise">
+      <span class="eyebrow__index">§AI</span>
+      <span class="eyebrow__label">Interview my AI self</span>
+    </p>
+    <h1 class="hero__title animate-rise">Interview an AI version of <%= profile.name.split(' ')[0] %>.</h1>
+    <p class="hero__lead animate-rise">
+      I built a small AI that answers interview questions as me — grounded in my real
+      background, projects and the way I work. Request access below; I personally review
+      every request, and if I approve it you'll get a private link to start a short interview.
+    </p>
+    <% if (typeof proofTiles !== 'undefined' && proofTiles) { %>
+      <div class="animate-rise">
+        <%- include('../../partials/proof-strip', { tiles: proofTiles }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="section section--narrow" id="request">
+  <header class="section__head">
+    <h2 class="section__title"><span class="section__index">§01</span> Request access</h2>
+  </header>
+
+  <% if (typeof attack !== 'undefined' && attack) { %>
+    <div class="flash flash--info">
+      <span class="flash__dot" aria-hidden="true"></span>
+      <span class="flash__text">
+        You're trying published attack <strong><%= attack.id %></strong> from the
+        <a href="/lab/red-team#<%= attack.id %>">red-team log</a>. Request access below — once
+        approved, the attack prompt will be pre-filled in your chat so you can watch the
+        guardrail block it.
+      </span>
+    </div>
+  <% } %>
+
+  <% if (errors._) { %>
+    <div class="form-error form-error--banner"><%= errors._ %></div>
+  <% } %>
+
+  <form method="post" action="/interview/request" class="form form--card" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="field">
+      <label class="field__label" for="email">Your email</label>
+      <input class="input <%= errors.email ? 'input--error' : '' %>" type="email" id="email" name="email"
+             value="<%= values.email %>" autocomplete="email" required placeholder="you@company.com" />
+      <% if (errors.email) { %><span class="field__error"><%= errors.email %></span><% } %>
+      <span class="field__hint">If approved, the interview link is emailed here.</span>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="name">Your name <span class="field__optional">(optional)</span></label>
+      <input class="input" type="text" id="name" name="name" value="<%= values.name %>" autocomplete="name" maxlength="120" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="purpose">Why you'd like to interview me <span class="field__optional">(optional)</span></label>
+      <textarea class="input textarea" id="purpose" name="purpose" rows="4" maxlength="1000"
+                placeholder="e.g. We're hiring for a backend/AI role and would like to see how you reason."><%= values.purpose %></textarea>
+      <% if (errors.purpose) { %><span class="field__error"><%= errors.purpose %></span><% } %>
+    </div>
+
+    <!-- Honeypot: hidden from humans; bots that fill it are silently dropped. -->
+    <div class="hp-field" aria-hidden="true">
+      <label for="website">Website</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <button type="submit" class="btn btn--accent btn--block">Request access</button>
+    <p class="form__foot">You'll only ever be emailed about this request — nothing else.</p>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

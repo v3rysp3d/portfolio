@@ -1,0 +1,109 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin admin--narrow">
+  <a href="/admin/projects" class="backlink">← Projects</a>
+  <header class="admin__head">
+    <h1 class="admin__title"><%= mode === 'new' ? 'New project' : 'Edit project' %></h1>
+  </header>
+
+  <% if (errors._) { %><div class="form-error form-error--banner"><%= errors._ %></div><% } %>
+
+  <form method="post" action="<%= actionUrl %>" class="form form--card" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="field">
+      <label class="field__label" for="title">Title <span class="req">*</span></label>
+      <input class="input" id="title" name="title" value="<%= form.title || '' %>" maxlength="200" required />
+      <% if (errors.title) { %><p class="form-error"><%= errors.title %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="slug">Slug</label>
+      <input class="input" id="slug" name="slug" value="<%= form.slug || '' %>" placeholder="auto-generated from title" />
+      <p class="field__hint">Lowercase letters, numbers and hyphens. Leave blank to auto-generate.</p>
+      <% if (errors.slug) { %><p class="form-error"><%= errors.slug %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="summary">Summary <span class="req">*</span></label>
+      <input class="input" id="summary" name="summary" value="<%= form.summary || '' %>" maxlength="600" required />
+      <p class="field__hint">One line shown on project cards.</p>
+      <% if (errors.summary) { %><p class="form-error"><%= errors.summary %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="description">Description</label>
+      <textarea class="input textarea" id="description" name="description" rows="9"><%= form.description || '' %></textarea>
+      <p class="field__hint">Full write-up. Leave a blank line between paragraphs.</p>
+      <% if (errors.description) { %><p class="form-error"><%= errors.description %></p><% } %>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="role">Role</label>
+        <input class="input" id="role" name="role" value="<%= form.role || '' %>" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="period">Period</label>
+        <input class="input" id="period" name="period" value="<%= form.period || '' %>" placeholder="e.g. 2024 – 2025" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="category">Category</label>
+        <input class="input" id="category" name="category" value="<%= form.category || '' %>" placeholder="e.g. Full-Stack Web" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="sortOrder">Sort order</label>
+        <input class="input" id="sortOrder" name="sortOrder" type="number" min="0" value="<%= form.sortOrder %>" />
+        <% if (errors.sortOrder) { %><p class="form-error"><%= errors.sortOrder %></p><% } %>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="techStack">Tech stack</label>
+      <input class="input" id="techStack" name="techStack" value="<%= form.techStack || '' %>" placeholder="Rust, AWS, PostgreSQL" />
+      <p class="field__hint">Comma-separated.</p>
+      <% if (errors.techStack) { %><p class="form-error"><%= errors.techStack %></p><% } %>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="repoUrl">Source URL</label>
+        <input class="input" id="repoUrl" name="repoUrl" value="<%= form.repoUrl || '' %>" placeholder="https://…" />
+        <% if (errors.repoUrl) { %><p class="form-error"><%= errors.repoUrl %></p><% } %>
+      </div>
+      <div class="field">
+        <label class="field__label" for="demoUrl">Demo URL</label>
+        <input class="input" id="demoUrl" name="demoUrl" value="<%= form.demoUrl || '' %>" placeholder="https://…" />
+        <% if (errors.demoUrl) { %><p class="form-error"><%= errors.demoUrl %></p><% } %>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="imageUrl">Image URL</label>
+      <input class="input" id="imageUrl" name="imageUrl" value="<%= form.imageUrl || '' %>" placeholder="https://…" />
+      <p class="field__hint">Optional preview image shown on the project page.</p>
+      <% if (errors.imageUrl) { %><p class="form-error"><%= errors.imageUrl %></p><% } %>
+    </div>
+
+    <div class="field-row field-row--checks">
+      <label class="check">
+        <input type="checkbox" name="featured" value="on" <%= form.featured ? 'checked' : '' %> />
+        <span>Featured on home</span>
+      </label>
+      <label class="check">
+        <input type="checkbox" name="visible" value="on" <%= form.visible ? 'checked' : '' %> />
+        <span>Visible to public</span>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--accent"><%= mode === 'new' ? 'Create project' : 'Save changes' %></button>
+      <a href="/admin/projects" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

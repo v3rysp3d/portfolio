@@ -1,0 +1,29 @@
+<%- include('../../partials/head', { nav: 'none', bodyClass: 'page-interview' }) %>
+
+<%
+  const messages = {
+    approved: ['Approved', 'A single-use interview link has been emailed to the requester.'],
+    declined: ['Declined', 'No link was sent. The request has been declined.'],
+    already:  ['Already handled', 'This request has already been approved or declined.'],
+    expired:  ['Expired', 'This request expired before it was actioned.'],
+    capacity: ['At capacity', 'The daily interview limit has been reached — try approving again tomorrow.'],
+    notfound: ['Not found', 'This review link is invalid or has already been used.'],
+  };
+  const m = messages[outcome] || messages.notfound;
+%>
+
+<section class="auth">
+  <div class="auth__card animate-rise">
+    <a href="/" class="auth__brand" aria-label="Home">
+      <span class="monogram__mark"><%= helpers.initials(profile.name) %></span>
+    </a>
+    <h1 class="auth__title"><%= m[0] %></h1>
+    <p class="auth__subtitle"><%= m[1] %></p>
+    <% if (request && (outcome === 'approved' || outcome === 'declined')) { %>
+      <p class="review-meta__label">Requester: <%= request.email %></p>
+    <% } %>
+    <a href="/admin/interviews" class="btn btn--ghost btn--block">Go to interview admin</a>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

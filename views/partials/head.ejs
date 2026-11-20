@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <%
+    const pageTitle = title ? `${title} · ${profile.name}` : `${profile.name} — ${profile.headline}`;
+    const pageDescription = (typeof description !== 'undefined' && description) ? description : profile.headline;
+    const isAdminNav = typeof nav !== 'undefined' && nav === 'admin';
+  %>
+  <title><%= pageTitle %></title>
+  <meta name="description" content="<%= pageDescription %>" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="<%= isAdminNav ? 'noindex, nofollow' : 'index, follow' %>" />
+  <% if (typeof canonicalUrl !== 'undefined' && canonicalUrl) { %>
+    <link rel="canonical" href="<%= canonicalUrl %>" />
+  <% } %>
+  <% if (!isAdminNav) { %>
+    <meta property="og:title" content="<%= pageTitle %>" />
+    <meta property="og:description" content="<%= pageDescription %>" />
+    <meta property="og:type" content="<%= (typeof ogType !== 'undefined' && ogType) ? ogType : 'website' %>" />
+    <meta property="og:site_name" content="<%= profile.name %>" />
+    <% if (typeof canonicalUrl !== 'undefined' && canonicalUrl) { %><meta property="og:url" content="<%= canonicalUrl %>" /><% } %>
+    <meta property="og:image" content="<%= (typeof ogImage !== 'undefined' && ogImage) ? ogImage : '/og.png' %>" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<%= pageTitle %>" />
+    <meta name="twitter:description" content="<%= pageDescription %>" />
+  <% } %>
+  <% if (typeof jsonLd !== 'undefined' && jsonLd) { %>
+    <script type="application/ld+json"><%- jsonLd %></script>
+  <% } %>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <%# Sync head script (CSP: no inline JS) — sets html.js / html.motion-ok before first paint. %>
+  <script src="<%= asset('boot.js') %>"></script>
+  <%# Fonts are self-hosted (public/fonts) — no third-party origins at runtime. %>
+  <link rel="preload" href="/fonts/fraunces-normal-100-900.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/ibm-plex-sans-variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="<%= asset('app.css') %>" />
+  <link rel="stylesheet" href="<%= asset('print.css') %>" media="print" />
+</head>
+<body data-section="<%= typeof nav !== 'undefined' ? nav : 'public' %>" class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <%# Pointer-reactive layers (decorative; driven by motion/pointer.ts on
+      fine-pointer, motion-ok visitors — inert for everyone else). %>
+  <div class="grid-spotlight" aria-hidden="true"></div>
+  <div class="crosshair" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+  <% const navKind = (typeof nav !== 'undefined') ? nav : 'public'; %>
+  <% if (navKind === 'public') { %>
+    <%- include('nav-public') %>
+  <% } else if (navKind === 'admin') { %>
+    <%- include('nav-admin') %>
+  <% } %>
+  <main id="main" class="main">
+    <%- include('flash') %>

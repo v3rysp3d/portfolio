@@ -1,0 +1,23 @@
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="monogram" href="/">
+      <span class="monogram__mark" aria-hidden="true"><%= helpers.initials(profile.name) %></span>
+      <span class="monogram__name"><%= profile.name %></span>
+    </a>
+
+    <nav class="topnav" aria-label="Primary">
+      <a href="/#work" class="topnav__link">Work</a>
+      <a href="/cv" class="topnav__link <%= currentPath === '/cv' ? 'is-active' : '' %>">CV</a>
+      <a href="/lab" class="topnav__link <%= currentPath.startsWith('/lab') ? 'is-active' : '' %>">Lab</a>
+      <a href="/interview" class="topnav__link topnav__link--accent <%= currentPath.startsWith('/interview') ? 'is-active' : '' %>">Interview me ↗</a>
+      <a href="/#contact" class="topnav__link">Contact</a>
+      <% if (profile.resumeUrl) { %>
+        <a href="<%= profile.resumeUrl %>" class="topnav__link" target="_blank" rel="noopener noreferrer">Résumé ↗</a>
+      <% } %>
+    </nav>
+
+    <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" data-nav-toggle>
+      <span></span><span></span>
+    </button>
+  </div>
+</header>

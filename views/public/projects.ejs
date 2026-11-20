@@ -1,0 +1,21 @@
+<%- include('../partials/head', { nav: 'public', bodyClass: 'page-projects' }) %>
+
+<section class="section section--top">
+  <header class="section__head section__head--page animate-rise">
+    <p class="eyebrow"><span class="eyebrow__index">§</span><span class="eyebrow__label">Index</span></p>
+    <h1 class="page-title">Projects</h1>
+    <p class="page-subtitle">A selection of things I’ve designed, built and shipped.</p>
+  </header>
+
+  <% if (projects.length === 0) { %>
+    <p class="empty">No projects published yet.</p>
+  <% } else { %>
+    <div class="project-grid project-grid--full">
+      <% projects.forEach(function (project, index) { %>
+        <%- include('../partials/project-card', { project: project, index: index }) %>
+      <% }); %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

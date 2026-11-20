@@ -1,0 +1,43 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin">
+  <header class="admin__head">
+    <h1 class="admin__title">Interview #<%= session.id %></h1>
+    <p class="admin__subtitle">
+      <%= session.email %> ·
+      <span class="badge badge--<%= session.status %>"><%= session.status %></span> ·
+      <%= session.turnsUsed %>/<%= session.maxTurns %> turns ·
+      <%= (session.inputTokens + session.outputTokens).toLocaleString() %> tokens
+    </p>
+    <p class="admin__subtitle muted">
+      Created <%= session.createdAt %> UTC · expires <%= session.expiresAt.replace('T', ' ').slice(0, 16) %>
+    </p>
+  </header>
+
+  <div class="admin__panel-head">
+    <a class="btn btn--ghost btn--sm" href="/admin/interviews">← All interviews</a>
+    <% if (session.status === 'active') { %>
+      <form method="post" action="/admin/interviews/sessions/<%= session.id %>/revoke" data-confirm="Revoke this interview session?">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button type="submit" class="btn btn--ghost btn--sm">Revoke</button>
+      </form>
+    <% } %>
+  </div>
+
+  <section class="admin__panel">
+    <% if (transcript.length === 0) { %>
+      <p class="empty">No messages yet.</p>
+    <% } else { %>
+      <div class="chat__log chat__log--admin">
+        <% transcript.forEach(function (m) { %>
+          <div class="chat-msg chat-msg--<%= m.role %>">
+            <div class="chat-msg__meta"><%= m.role === 'user' ? 'Interviewer' : 'AI Nathan' %> · <%= m.createdAt.replace('T', ' ').slice(0, 16) %></div>
+            <div class="chat-msg__body"><%= m.content %></div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </section>
+</section>
+
+<%- include('../partials/footer') %>

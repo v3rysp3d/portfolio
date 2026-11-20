@@ -1,0 +1,79 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin admin--narrow">
+  <a href="/admin/experience" class="backlink">← Experience &amp; education</a>
+  <header class="admin__head">
+    <h1 class="admin__title"><%= mode === 'new' ? 'New entry' : 'Edit entry' %></h1>
+    <p class="admin__subtitle">Work, education or a certification — pick a type below.</p>
+  </header>
+
+  <% if (errors._) { %><div class="form-error form-error--banner"><%= errors._ %></div><% } %>
+
+  <form method="post" action="<%= actionUrl %>" class="form form--card" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="field">
+      <label class="field__label" for="kind">Type</label>
+      <select class="input" id="kind" name="kind">
+        <option value="work" <%= form.kind === 'work' ? 'selected' : '' %>>Work experience</option>
+        <option value="education" <%= form.kind === 'education' ? 'selected' : '' %>>Education</option>
+        <option value="certification" <%= form.kind === 'certification' ? 'selected' : '' %>>Certification</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="role">Title <span class="req">*</span></label>
+        <input class="input" id="role" name="role" value="<%= form.role || '' %>" required />
+        <p class="field__hint">Job title, degree, or certificate name.</p>
+        <% if (errors.role) { %><p class="form-error"><%= errors.role %></p><% } %>
+      </div>
+      <div class="field">
+        <label class="field__label" for="company">Organisation <span class="req">*</span></label>
+        <input class="input" id="company" name="company" value="<%= form.company || '' %>" required />
+        <p class="field__hint">Employer, institution, or issuer.</p>
+        <% if (errors.company) { %><p class="form-error"><%= errors.company %></p><% } %>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="location">Location</label>
+      <input class="input" id="location" name="location" value="<%= form.location || '' %>" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="startDate">Start</label>
+        <input class="input" id="startDate" name="startDate" value="<%= form.startDate || '' %>" placeholder="e.g. 2024" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="endDate">End</label>
+        <input class="input" id="endDate" name="endDate" value="<%= form.endDate || '' %>" placeholder="leave blank for Present" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="summary">Summary</label>
+      <textarea class="input textarea" id="summary" name="summary" rows="4"><%= form.summary || '' %></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="url">Link</label>
+      <input class="input" id="url" name="url" value="<%= form.url || '' %>" placeholder="https://… (credential / institution)" />
+      <% if (errors.url) { %><p class="form-error"><%= errors.url %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="sortOrder">Sort order</label>
+      <input class="input input--sm" id="sortOrder" name="sortOrder" type="number" min="0" value="<%= form.sortOrder %>" />
+      <p class="field__hint">Lower numbers appear first within each section.</p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--accent"><%= mode === 'new' ? 'Add entry' : 'Save changes' %></button>
+      <a href="/admin/experience" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

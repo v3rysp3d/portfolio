@@ -1,0 +1,168 @@
+/* ============================================================================
+   AI-showcase component vocabulary (per docs/ai-showcase-ui-mockguide.md):
+   stat tiles, proof strip, model-tier tags, charts, meters, version timeline,
+   chat telemetry states, red-team attack cards. Loaded after core.css so the
+   evolved .stat-card family also restyles the admin dashboard tiles.
+   Accent discipline: exactly one orange device per view; state is always
+   carried by text, never color alone.
+   ========================================================================== */
+
+/* ── Metric tiles ──────────────────────────────────────────────────────── */
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.9rem; }
+.stat-card {
+  position: relative; overflow: hidden;
+  padding: 1.15rem 1.15rem 1rem; background: var(--ink-1); border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease), background 0.3s var(--ease);
+}
+.stat-card:hover { border-color: var(--line-3); transform: translateY(-3px); background: var(--ink-2); }
+.stat-card__value { font-family: var(--font-display); font-size: clamp(1.9rem, 3.4vw, 2.5rem); line-height: 1; letter-spacing: -0.01em; }
+.stat-card__label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-2); margin-top: 0.5rem; }
+.stat-card__sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+.stat-card__src { display: block; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-top: 0.55rem; }
+.stat-card--accent { background: color-mix(in srgb, var(--accent) 12%, var(--ink-1)); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.stat-card--accent .stat-card__value { color: var(--accent); }
+.stat-card--accent::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
+}
+
+/* ── Proof strip (a single <a> into /lab) + home teaser band ───────────── */
+.proof-strip { display: block; border-top: 1px solid var(--line); margin-top: 2.4rem; padding-top: 1rem; }
+.proof-strip__cap, .proof-strip__foot { display: flex; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.proof-strip__cap { margin-bottom: 0.8rem; }
+.proof-strip__cap .accent, .lab-meta .accent { color: var(--accent); }
+.proof-strip__foot { margin-top: 0.8rem; color: var(--faint); }
+.proof-strip:hover .stat-card { border-color: var(--line-2); }
+
+.lab-teaser { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+@media (max-width: 760px) { .lab-teaser { grid-template-columns: 1fr; } }
+
+.lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.25rem, 3vw, 2.25rem); }
+.lab-grid--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .lab-grid, .lab-grid--3 { grid-template-columns: 1fr; } }
+
+.lab-foot, .lab-meta { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--muted); }
+
+/* ── Badge upgrades + filter pills ─────────────────────────────────────── */
+.badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+html.motion-ok .badge--active .badge__dot { animation: pulse 2s infinite; }
+button.pill { cursor: pointer; transition: border-color 0.25s var(--ease), color 0.25s var(--ease); }
+button.pill:hover, .pill.is-active { color: var(--text); border-color: var(--accent); }
+
+/* ── Model-tier tag (text carries meaning; color is reinforcement) ─────── */
+.tier-tag { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.tier-tag--haiku { color: var(--muted); }
+.tier-tag--sonnet { color: var(--accent); }
+.tier-tag--sonnet::before { content: "▐ "; }
+
+/* ── Pass-rate chart (SVG drawn by JS; sr-only mirror table is the a11y
+      fallback and the no-JS rendering) ─────────────────────────────────── */
+.ascii-chart { position: relative; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--ink-1); padding: 1.2rem; overflow: hidden; }
+.ascii-chart svg { width: 100%; height: auto; display: block; }
+.chart-grid line { stroke: var(--line); stroke-width: 1; }
+.chart-target { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+.chart-area { fill: url(#chart-fill); opacity: 0; transition: opacity 1.2s var(--ease) 0.6s; }
+.is-revealed .chart-area { opacity: 1; }
+.chart-line { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.chart-line--draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
+html.motion-ok .is-revealed .chart-line--draw { animation: draw 1.6s var(--ease-out) forwards; }
+html:not(.motion-ok) .chart-line--draw { stroke-dashoffset: 0; }
+.chart-pt { fill: var(--ink); stroke: var(--text); stroke-width: 2; }
+.chart-pt--last { fill: var(--accent); stroke: var(--accent); r: 5; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 70%, transparent)); }
+.chart-axis text, .chart-ticks text { font-family: var(--font-mono); font-size: 10px; fill: var(--muted); letter-spacing: 0.04em; }
+.chart-lbl { font-family: var(--font-mono); font-size: 10px; fill: var(--text-2); }
+
+.sparkline { display: inline-flex; align-items: baseline; gap: 0.7rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin-top: 1rem; }
+.sparkline__bars { letter-spacing: 1px; color: var(--text-2); }
+.sparkline__delta { color: var(--ok); }
+.sparkline__delta--down { color: var(--danger); }
+
+/* ── Horizontal meter (category pass-rate / routing mix) ───────────────── */
+.meter { display: grid; grid-template-columns: 5.5rem 1fr 2.6rem; align-items: center; gap: 0.8rem; margin: 0.5rem 0; }
+.meter__label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); }
+.meter__track { position: relative; height: 10px; background: var(--ink-2); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.meter__fill { position: absolute; inset: 0 100% 0 0; background: var(--text-2); border-radius: 999px; transition: right 1.1s var(--ease-out); }
+.is-revealed .meter__fill, html:not(.motion-ok) .meter__fill { right: calc(100% - var(--pct)); }
+.meter--accent .meter__fill { background: var(--accent); }
+.meter__val { font-family: var(--font-mono); font-size: 0.8rem; text-align: right; color: var(--text); }
+
+.data-table .ta-right { text-align: right; font-family: var(--font-mono); }
+
+/* ── Prompt-version timeline ───────────────────────────────────────────── */
+.version-row { position: relative; padding: 0 0 1.6rem 1.8rem; }
+.version-row::before { content: ""; position: absolute; left: 5px; top: 14px; bottom: -6px; width: 1px; background: var(--line-2); }
+.version-row:last-child::before { display: none; }
+.version-row__dot { position: absolute; left: 0; top: 5px; width: 11px; height: 11px; border-radius: 50%; background: var(--muted); border: 2px solid var(--ink); box-shadow: 0 0 0 1px var(--line-2); }
+.version-row--accent .version-row__dot { background: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent); }
+.version-row__head { display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap; }
+.version-row__v { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.1em; color: var(--text); }
+.version-row__date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+.version-row__score { font-family: var(--font-display); font-size: 1.1rem; }
+.version-row__delta { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ok); }
+.version-row__delta--flat { color: var(--faint); }
+.version-row__delta--down { color: var(--danger); }
+.version-row__body { color: var(--text-2); font-size: 0.92rem; margin-top: 0.35rem; max-width: 60ch; }
+
+/* ── Chat telemetry (per-turn meta + guardrail states) ─────────────────── */
+.chat__cost { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--text-2); }
+.chat__cost a { color: var(--accent); }
+.chat__cost-now { color: var(--text); }
+.chat-msg__meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; }
+.chat-msg--escalated { border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+.chat-msg--blocked { border-color: color-mix(in srgb, var(--danger) 35%, transparent); background: color-mix(in srgb, var(--danger) 8%, var(--ink-2)); }
+.chat-msg--refusal { border-color: color-mix(in srgb, var(--warn) 30%, transparent); }
+.chat-msg__caret { display: inline-block; width: 8px; height: 1.05em; background: var(--accent); vertical-align: -2px; }
+html.motion-ok .chat-msg__caret { animation: blink 1s steps(2) infinite; }
+.chat__note--throttle { color: var(--accent); }
+
+/* ── Red-team attack cards ─────────────────────────────────────────────── */
+.legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.2rem 0; }
+.attack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.2rem; }
+.attack-card { display: flex; flex-direction: column; background: var(--ink-1); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+.attack-card:hover { border-color: var(--line-3); transform: translateY(-3px); }
+.attack-card--open { border-left: 3px solid var(--accent); }
+.attack-card__head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.attack-card__id { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--muted); }
+.attack-card__verdicts { display: flex; align-items: center; gap: 0.4rem; }
+.attack__prompt { margin: 0.9rem 1rem; padding: 0.7rem 0.8rem; background: var(--ink); border-left: 3px solid var(--accent); border-radius: var(--radius); font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-2); white-space: pre-wrap; overflow-x: auto; }
+.attack-card__rows { padding: 0 1rem 0.4rem; display: grid; gap: 0.5rem; }
+.attack-row { display: grid; grid-template-columns: 3.4rem 1fr; gap: 0.6rem; font-size: 0.86rem; }
+.attack-row__k { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 0.15rem; }
+.attack-row__v { color: var(--text-2); }
+.attack-card__actions { margin-top: auto; display: flex; gap: 0.5rem; padding: 0.9rem 1rem; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.verdict-badge { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.18rem 0.45rem; border-radius: 2px; border: 1px solid var(--line-2); }
+.verdict-badge--defeated { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+.verdict-badge--patched { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+.verdict-badge--open { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.verdict-arrow { color: var(--faint); }
+.version-tag { font-family: var(--font-mono); font-size: 0.66rem; color: var(--muted); }
+
+/* ── 3D tilt + glare (applied by motion/tilt.ts on fine pointers) ──────── */
+.project-grid, .stat-cards, .attack-grid, .lab-grid { perspective: 1000px; }
+.tilt {
+  transform-style: preserve-3d;
+  position: relative;
+  overflow: hidden;
+}
+.tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+  background: radial-gradient(
+    340px at var(--gx, 50%) var(--gy, 50%),
+    color-mix(in srgb, var(--text) 7%, transparent),
+    transparent 65%
+  );
+}
+.tilt:hover::after { opacity: 1; }
+
+/* ── Generic card + button arrow affordance ────────────────────────────── */
+.card { background: var(--ink-1); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: clamp(1.2rem, 3vw, 2rem); }
+.btn__arrow { transition: transform 0.25s var(--ease); }
+.btn:hover .btn__arrow { transform: translateX(3px); }
+.monogram__mark { transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+.monogram:hover .monogram__mark { border-color: var(--accent); transform: rotate(-6deg); }

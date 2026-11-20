@@ -1,0 +1,53 @@
+{
+  "name": "nathan-burr-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal portfolio website for Nathan Burr — project showcase with an admin-managed SQLite backend.",
+  "author": "Nathan Burr",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,yellow \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "tsx watch src/server.ts",
+    "dev:client": "node scripts/build-client.mjs --watch",
+    "build": "node scripts/build-client.mjs && tsc -p tsconfig.json && node scripts/copy-migrations.cjs",
+    "start": "node dist/server.js",
+    "seed": "tsx src/db/seed.ts",
+    "seed:prod": "node dist/db/seed.js",
+    "load:resume": "tsx src/db/load-resume.ts",
+    "load:resume:prod": "node dist/db/load-resume.js",
+    "eval": "tsx src/eval/run.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.client.json --noEmit",
+    "og": "node scripts/generate-og.cjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.2",
+    "@aws-sdk/client-sesv2": "^3.1069.0",
+    "@node-rs/argon2": "^2.0.2",
+    "better-sqlite3": "^11.8.1",
+    "better-sqlite3-session-store": "^0.1.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^4.17.21",
+    "@types/express-session": "^1.18.1",
+    "@types/node": "^22.10.5",
+    "concurrently": "^10.0.3",
+    "esbuild": "^0.28.1",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.25",
+    "ogl": "^1.0.11",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

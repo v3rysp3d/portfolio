@@ -1,0 +1,100 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin">
+  <header class="admin__head">
+    <h1 class="admin__title">Interviews</h1>
+    <p class="admin__subtitle">
+      AI interview gate ·
+      <strong><%= meta.enabled ? 'enabled' : 'disabled' %></strong> ·
+      model <strong><%= meta.provider === 'stub' ? 'stub (no spend)' : meta.model %></strong> ·
+      email <strong><%= meta.emailTransport %></strong>
+    </p>
+  </header>
+
+  <div class="stat-cards">
+    <div class="stat-card">
+      <span class="stat-card__value"><%= usage.requestCount %> / <%= caps.requests %></span>
+      <span class="stat-card__label">Requests today</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value"><%= usage.sessionCount %> / <%= caps.sessions %></span>
+      <span class="stat-card__label">Approved today</span>
+    </div>
+    <div class="stat-card <%= (usage.inputTokens + usage.outputTokens) >= caps.tokens ? 'stat-card--accent' : '' %>">
+      <span class="stat-card__value"><%= (usage.inputTokens + usage.outputTokens).toLocaleString() %></span>
+      <span class="stat-card__label">Tokens today</span>
+      <span class="stat-card__sub">cap <%= caps.tokens.toLocaleString() %></span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value"><%= usage.outputTokens.toLocaleString() %></span>
+      <span class="stat-card__label">Output tokens</span>
+    </div>
+  </div>
+
+  <section class="admin__panel">
+    <div class="admin__panel-head">
+      <h2 class="admin__panel-title">Sessions</h2>
+    </div>
+    <% if (sessions.length === 0) { %>
+      <p class="empty">No interview sessions yet.</p>
+    <% } else { %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>#</th><th>Email</th><th>Status</th><th>Turns</th><th>Tokens</th><th>Expires</th><th></th></tr>
+          </thead>
+          <tbody>
+            <% sessions.forEach(function (s) { %>
+              <tr>
+                <td><a class="data-table__title" href="/admin/interviews/<%= s.id %>">#<%= s.id %></a></td>
+                <td><%= s.email %></td>
+                <td><span class="badge badge--<%= s.status %>"><%= s.status %></span></td>
+                <td class="muted"><%= s.turnsUsed %>/<%= s.maxTurns %></td>
+                <td class="muted"><%= (s.inputTokens + s.outputTokens).toLocaleString() %></td>
+                <td class="muted"><%= s.expiresAt.replace('T', ' ').slice(0, 16) %></td>
+                <td>
+                  <% if (s.status === 'active') { %>
+                    <form method="post" action="/admin/interviews/sessions/<%= s.id %>/revoke" data-confirm="Revoke this interview session?">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                      <button type="submit" class="btn btn--ghost btn--sm">Revoke</button>
+                    </form>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </section>
+
+  <section class="admin__panel">
+    <div class="admin__panel-head">
+      <h2 class="admin__panel-title">Requests</h2>
+    </div>
+    <% if (requests.length === 0) { %>
+      <p class="empty">No access requests yet.</p>
+    <% } else { %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Requested</th></tr>
+          </thead>
+          <tbody>
+            <% requests.forEach(function (r) { %>
+              <tr>
+                <td class="muted">#<%= r.id %></td>
+                <td><%= r.email %></td>
+                <td class="muted"><%= r.name || '—' %></td>
+                <td><span class="badge badge--<%= r.status %>"><%= r.status %></span></td>
+                <td class="muted"><%= r.createdAt.replace('T', ' ').slice(0, 16) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </section>
+</section>
+
+<%- include('../partials/footer') %>

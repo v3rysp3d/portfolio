@@ -1,0 +1,133 @@
+<%- include('../partials/head', { nav: 'public', bodyClass: 'page-cv' }) %>
+
+<%
+  // Sections are numbered as they render, so an empty group (e.g. no
+  // certifications yet) never leaves a gap in the §-sequence.
+  let cvSectionCount = 0;
+  const nextIndex = () => '§' + String(++cvSectionCount).padStart(2, '0');
+%>
+
+<article class="cv" data-cv>
+  <%# ── CV masthead ─────────────────────────────────────────────────────── %>
+  <header class="section section--top cv-header">
+    <p class="eyebrow reveal">
+      <span class="eyebrow__index">§CV</span>
+      <span class="eyebrow__label">Curriculum vitae</span>
+      <% if (profile.location) { %><span class="eyebrow__sep">/</span><span><%= profile.location %></span><% } %>
+    </p>
+    <h1 class="cv-header__name reveal" data-delay="1"><%= profile.name %></h1>
+    <p class="cv-header__headline reveal" data-delay="2"><%= profile.headline %></p>
+
+    <div class="cv-header__links reveal" data-delay="3">
+      <% if (profile.email) { %><a class="footer-link" href="mailto:<%= profile.email %>"><span class="footer-link__key">email</span><%= profile.email %></a><% } %>
+      <% if (profile.linkedinUrl) { %><a class="footer-link" href="<%= profile.linkedinUrl %>" target="_blank" rel="noopener noreferrer"><span class="footer-link__key">linkedin</span><%= helpers.displayUrl(profile.linkedinUrl) %></a><% } %>
+      <% if (profile.githubUrl) { %><a class="footer-link" href="<%= profile.githubUrl %>" target="_blank" rel="noopener noreferrer"><span class="footer-link__key">github</span><%= helpers.displayUrl(profile.githubUrl) %></a><% } %>
+      <% if (profile.websiteUrl) { %><a class="footer-link" href="<%= profile.websiteUrl %>" target="_blank" rel="noopener noreferrer"><span class="footer-link__key">web</span><%= helpers.displayUrl(profile.websiteUrl) %></a><% } %>
+    </div>
+
+    <div class="cv-header__actions reveal" data-delay="4">
+      <button type="button" class="btn btn--accent" data-print-cv>Print / save as PDF</button>
+      <% if (profile.resumeUrl) { %>
+        <a href="<%= profile.resumeUrl %>" class="btn btn--ghost" target="_blank" rel="noopener noreferrer">Download résumé ↗</a>
+      <% } %>
+      <a href="/interview" class="btn btn--ghost">Interview my AI self ↗</a>
+    </div>
+
+    <dl class="hero__stats cv-header__stats reveal" data-delay="5">
+      <% if (stats.yearsActive) { %>
+        <div class="stat"><dt class="stat__label">Years active</dt><dd class="stat__value" data-countup="<%= stats.yearsActive %>"><%= stats.yearsActive %></dd></div>
+      <% } %>
+      <div class="stat"><dt class="stat__label">Projects</dt><dd class="stat__value" data-countup="<%= stats.projectCount %>"><%= String(stats.projectCount).padStart(2, '0') %></dd></div>
+      <div class="stat"><dt class="stat__label">Skills</dt><dd class="stat__value" data-countup="<%= stats.skillCount %>"><%= stats.skillCount %></dd></div>
+    </dl>
+  </header>
+
+  <%# ── Summary ─────────────────────────────────────────────────────────── %>
+  <% if (profile.bio) { %>
+    <section class="section cv-section" aria-labelledby="cv-summary">
+      <header class="section__head reveal">
+        <h2 class="section__title" id="cv-summary"><span class="section__index"><%= nextIndex() %></span> Profile</h2>
+      </header>
+      <div class="prose prose--lead reveal" data-delay="1"><%- helpers.paragraphsHtml(profile.bio) %></div>
+    </section>
+  <% } %>
+
+  <%# ── Experience / education / certifications share one entry layout ──── %>
+  <% const renderTimeline = (group) => { if (group.items.length === 0) return; %>
+    <section class="section cv-section" id="<%= group.id %>" aria-labelledby="cv-<%= group.id %>">
+      <header class="section__head reveal">
+        <h2 class="section__title" id="cv-<%= group.id %>"><span class="section__index"><%= nextIndex() %></span> <%= group.title %></h2>
+      </header>
+      <ol class="cv-timeline" data-timeline>
+        <% group.items.forEach((item, i) => { %>
+          <li class="cv-entry reveal" <% if (i < 5) { %>data-delay="<%= Math.min(i + 1, 5) %>"<% } %>>
+            <div class="cv-entry__period"><%= helpers.formatDateRange(item.startDate, item.endDate) %></div>
+            <div class="cv-entry__body">
+              <h3 class="cv-entry__role"><%= item.role %></h3>
+              <p class="cv-entry__org">
+                <span class="cv-entry__company"><%= item.company %></span>
+                <% if (item.location) { %><span class="cv-entry__loc">· <%= item.location %></span><% } %>
+              </p>
+              <% if (item.summary) { %><p class="cv-entry__summary"><%= item.summary %></p><% } %>
+              <% if (item.url) { %>
+                <a class="cv-entry__link" href="<%= item.url %>" target="_blank" rel="noopener noreferrer"><%= helpers.displayHost(item.url) %> ↗</a>
+              <% } %>
+            </div>
+          </li>
+        <% }) %>
+      </ol>
+    </section>
+  <% }; %>
+
+  <% renderTimeline({ id: 'experience', title: 'Experience', items: work }); %>
+
+  <%# ── Selected projects ───────────────────────────────────────────────── %>
+  <% if (selectedProjects.length > 0) { %>
+    <section class="section cv-section" id="cv-work" aria-labelledby="cv-projects">
+      <header class="section__head reveal">
+        <h2 class="section__title" id="cv-projects"><span class="section__index"><%= nextIndex() %></span> Selected projects</h2>
+        <a href="/projects" class="section__action">All projects <span aria-hidden="true">→</span></a>
+      </header>
+      <ol class="cv-projects">
+        <% selectedProjects.forEach((project, i) => { %>
+          <li class="cv-project reveal" <% if (i < 5) { %>data-delay="<%= Math.min(i + 1, 5) %>"<% } %>>
+            <div class="cv-project__head">
+              <a class="cv-project__title" href="/projects/<%= project.slug %>"><%= project.title %></a>
+              <span class="cv-project__meta"><%= [project.role, project.period].filter(Boolean).join(' · ') %></span>
+            </div>
+            <% if (project.summary) { %><p class="cv-project__summary"><%= project.summary %></p><% } %>
+            <% if (project.techStack.length) { %>
+              <ul class="tech-list">
+                <% project.techStack.slice(0, 7).forEach((tech) => { %><li class="tech-list__item"><%= tech %></li><% }) %>
+              </ul>
+            <% } %>
+          </li>
+        <% }) %>
+      </ol>
+    </section>
+  <% } %>
+
+  <% renderTimeline({ id: 'education', title: 'Education', items: education }); %>
+  <% renderTimeline({ id: 'certifications', title: 'Certifications', items: certifications }); %>
+
+  <%# ── Skills matrix ───────────────────────────────────────────────────── %>
+  <% if (skillGroups.length > 0) { %>
+    <section class="section cv-section" id="capabilities" aria-labelledby="cv-skills">
+      <header class="section__head reveal">
+        <h2 class="section__title" id="cv-skills"><span class="section__index"><%= nextIndex() %></span> Capabilities</h2>
+      </header>
+      <div class="skills-grid">
+        <% skillGroups.forEach((group, gi) => { %>
+          <div class="skill-group reveal" <% if (gi < 5) { %>data-delay="<%= Math.min(gi + 1, 5) %>"<% } %>>
+            <h3 class="skill-group__title"><%= group.category %></h3>
+            <ul class="tag-list">
+              <% group.skills.forEach((skill) => { %><li class="tag"><%= skill.name %></li><% }) %>
+            </ul>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+</article>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,41 @@
+<%- include('../../partials/head', { nav: 'none', bodyClass: 'page-interview' }) %>
+
+<section class="auth">
+  <div class="auth__card auth__card--wide animate-rise">
+    <a href="/" class="auth__brand" aria-label="Home">
+      <span class="monogram__mark"><%= helpers.initials(profile.name) %></span>
+    </a>
+    <h1 class="auth__title">Interview request</h1>
+    <p class="auth__subtitle">Someone would like to interview the AI version of you. Approve to email them a single-use link.</p>
+
+    <dl class="review-meta">
+      <div class="review-meta__row">
+        <dt>Email</dt>
+        <dd><%= request.email %></dd>
+      </div>
+      <% if (request.name) { %>
+        <div class="review-meta__row">
+          <dt>Name</dt>
+          <dd><%= request.name %></dd>
+        </div>
+      <% } %>
+      <div class="review-meta__row">
+        <dt>Requested</dt>
+        <dd><%= request.createdAt %> UTC</dd>
+      </div>
+    </dl>
+
+    <% if (request.purpose) { %>
+      <p class="review-meta__label">Their reason</p>
+      <blockquote class="review-quote"><%= request.purpose %></blockquote>
+    <% } %>
+
+    <form method="post" action="/interview/review/<%= token %>" class="review-actions">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button type="submit" name="action" value="approve" class="btn btn--accent">Approve &amp; send link</button>
+      <button type="submit" name="action" value="decline" class="btn btn--ghost">Decline</button>
+    </form>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,43 @@
+# Single-box deploy: the app container behind Caddy (automatic HTTPS).
+# Secrets (SESSION_SECRET, ANTHROPIC_API_KEY, SES creds/region) come from the
+# host environment / a gitignored .env — never commit them. See DEPLOY.md.
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      # App sits behind Caddy (TLS terminator) — trust X-Forwarded-* so secure
+      # cookies and client-IP rate limiting work.
+      TRUST_PROXY: "true"
+      DATABASE_PATH: /app/data/portfolio.db
+    volumes:
+      - app_data:/app/data
+    expose:
+      - "3000"          # internal only; not published to the host
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # Set to your domain (e.g. interview.example.com) for auto-HTTPS,
+      # or ":80" to serve plain HTTP locally for a smoke test.
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  app_data:
+  caddy_data:
+  caddy_config:

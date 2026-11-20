@@ -1,0 +1,137 @@
+<%- include('../../partials/head', { nav: 'public', bodyClass: 'page-interview-chat' }) %>
+
+<section class="chat" data-interview-chat>
+  <header class="chat__head">
+    <div>
+      <h1 class="chat__title">Interviewing <%= profile.name %> <span class="chat__ai">· AI</span></h1>
+      <p class="chat__subtitle">Ask about my background, projects, and how I approach problems. Answers come from an AI grounded in my real profile.</p>
+    </div>
+    <div class="chat__head-side">
+      <button type="button" class="btn btn--ghost btn--sm chat__info-btn" data-ai-info aria-haspopup="dialog">⌗ How this AI works</button>
+      <div class="chat__counter" data-remaining="<%= remainingTurns %>" data-max="<%= maxTurns %>">
+        <span class="chat__counter-num"><%= remainingTurns %></span>
+        <span class="chat__counter-label">questions left</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Suggested questions for interviewers — click to drop one into the box. -->
+  <div class="suggestions" data-suggestions>
+    <span class="suggestions__label">Try asking:</span>
+    <div class="suggestions__chips">
+      <% [
+        'Walk me through a project you are most proud of.',
+        'What is your experience with Rust and AI automation?',
+        'How do you approach reliability and testing in your work?',
+        'Tell me about a time you had to learn something fast.',
+        'What kind of role and team are you looking for?'
+      ].forEach(function (q) { %>
+        <button type="button" class="suggestion-chip" data-q="<%= q %>"><%= q %></button>
+      <% }); %>
+      <% [
+        'How does this chatbot route my questions to the AI?',
+        'How do you stop this AI from leaking secrets or going off-script?',
+        'How do you keep this AI feature cheap to run?',
+        'What would it take to swap the AI model out?'
+      ].forEach(function (q) { %>
+        <button type="button" class="suggestion-chip suggestion-chip--ai" data-q="<%= q %>" data-ai-q><%= q %></button>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="chat__log" data-chat-log aria-live="polite">
+    <% if (transcript.length === 0) { %>
+      <div class="chat-msg chat-msg--assistant">
+        <div class="chat-msg__body">Hi — I'm an AI version of <%= profile.name %>, here to answer your interview questions. What would you like to know?</div>
+      </div>
+    <% } %>
+    <% transcript.forEach(function (m) { %>
+      <%
+        const meta = m.meta;
+        const blocked = meta && meta.tier === 'none';
+        let msgMod = '';
+        if (meta) {
+          if (blocked) msgMod += ' chat-msg--blocked';
+          else if (meta.refused) msgMod += ' chat-msg--refusal';
+          if (meta.tier === 'sonnet') msgMod += ' chat-msg--escalated';
+        }
+      %>
+      <div class="chat-msg chat-msg--<%= m.role %><%= msgMod %>">
+        <% if (meta) { %>
+          <div class="chat-msg__meta">
+            <span class="tier-tag tier-tag--<%= meta.tier %>"><%= blocked ? 'GUARDRAIL' : meta.tier.toUpperCase() %></span>
+            <% if (!blocked) { %>
+              <span><%= meta.outputTokens %> TOK · <%= meta.latencyMs %>MS<%= meta.cacheReadTokens > 0 ? ' · CACHED' : '' %></span>
+            <% } %>
+            <% if (meta.guardrailFlags.includes('injection')) { %><span class="badge badge--revoked">⌗ injection blocked</span><% } %>
+            <% if (meta.guardrailFlags.includes('pii')) { %><span class="badge badge--declined">⌗ personal-data blocked</span><% } %>
+          </div>
+        <% } %>
+        <div class="chat-msg__body"><%= m.content %></div>
+      </div>
+    <% }); %>
+  </div>
+
+  <form class="chat__composer" method="post" action="/interview/message" data-interview-form>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <textarea
+      class="input textarea chat__input"
+      name="message"
+      rows="2"
+      maxlength="<%= maxInputChars %>"
+      placeholder="<%= remainingTurns > 0 ? 'Ask your question…' : 'No questions remaining.' %>"
+      data-chat-input
+      <%= remainingTurns > 0 ? '' : 'disabled' %>
+      required><%= (typeof prefill !== 'undefined' && prefill && remainingTurns > 0) ? prefill : '' %></textarea>
+    <button type="submit" class="btn btn--accent chat__send" data-chat-send <%= remainingTurns > 0 ? '' : 'disabled' %>>Send</button>
+  </form>
+  <p class="chat__note" data-chat-note>
+    <% if (remainingTurns === 0) { %>You've used all your questions for this interview. Thanks for your time!<% } else if (typeof prefillAttackId !== 'undefined' && prefillAttackId) { %>Published attack <%= prefillAttackId %> is pre-filled from the <a href="/lab/red-team#<%= prefillAttackId %>">red-team log</a> — hit Send to watch the guardrail block it (costs one turn, $0 in model spend).<% } else { %>This is a rate-limited demo — keep it to a handful of focused questions.<% } %>
+  </p>
+
+  <!-- "How this AI works" popout — high-level architecture, no sensitive detail. -->
+  <div class="modal" data-ai-modal hidden>
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+      <button type="button" class="modal__close" data-modal-close aria-label="Close">×</button>
+      <h2 class="modal__title" id="ai-modal-title">How this interview AI is built</h2>
+      <p class="modal__lead">A server-rendered app that talks to a language model — designed so credentials never touch your browser.</p>
+
+      <div class="arch-flow">
+        <div class="arch-node">
+          <span class="arch-node__icon">🧑‍💼</span>
+          <span class="arch-node__title">You</span>
+          <span class="arch-node__sub">browser</span>
+        </div>
+        <div class="arch-arrow"><span>HTTPS</span></div>
+        <div class="arch-node arch-node--accent">
+          <span class="arch-node__icon">⚙️</span>
+          <span class="arch-node__title">Portfolio server</span>
+          <span class="arch-node__sub">Node · TypeScript · SQLite</span>
+        </div>
+        <div class="arch-arrow"><span>server-side</span></div>
+        <div class="arch-node">
+          <span class="arch-node__icon">🤖</span>
+          <span class="arch-node__title">Claude (Haiku)</span>
+          <span class="arch-node__sub">grounded in my real CV</span>
+        </div>
+      </div>
+
+      <p class="modal__section-label">Engineering guardrails</p>
+      <div class="arch-pills">
+        <span class="pill">Approval-gated access</span>
+        <span class="pill">Per-session question cap</span>
+        <span class="pill">Global daily cost ceiling</span>
+        <span class="pill">Rate limiting</span>
+        <span class="pill">Expiring single-use links</span>
+        <span class="pill">Persona built from real data</span>
+        <span class="pill">Resists prompt-injection</span>
+        <span class="pill">Secrets stay server-side</span>
+      </div>
+
+      <p class="modal__foot">The model is only ever reached from the server — by design, no keys or model calls exist in the browser at all.</p>
+    </div>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

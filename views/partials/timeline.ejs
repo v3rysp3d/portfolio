@@ -1,0 +1,17 @@
+<ol class="timeline">
+  <% items.forEach(function (item) { %>
+    <li class="timeline__item">
+      <div class="timeline__period"><%= helpers.formatDateRange(item.startDate, item.endDate) || '—' %></div>
+      <div class="timeline__body">
+        <h3 class="timeline__role"><%= item.role %></h3>
+        <p class="timeline__company">
+          <%= item.company %><% if (item.location) { %> <span class="timeline__loc">· <%= item.location %></span><% } %>
+        </p>
+        <% if (item.summary) { %><p class="timeline__summary"><%= item.summary %></p><% } %>
+        <% if (item.url) { %>
+          <a class="timeline__link" href="<%= item.url %>" target="_blank" rel="noopener noreferrer"><%= helpers.displayHost(item.url) || 'View' %> ↗</a>
+        <% } %>
+      </div>
+    </li>
+  <% }); %>
+</ol>

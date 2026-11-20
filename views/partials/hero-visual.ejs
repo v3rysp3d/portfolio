@@ -1,0 +1,25 @@
+<%# Decorative hero backdrop. Layer 1: static SVG topographic contours —
+    always rendered, what no-JS / reduced-motion / mobile / no-WebGL visitors
+    see, and what shows during the lazy chunk load. Layer 2: the WebGL canvas,
+    which fades in over it on capable desktops. Hero text sits above both and
+    never depends on either. %>
+<div class="hero-visual" aria-hidden="true">
+  <svg class="hero-visual__fallback" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <g fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="1">
+      <path d="M-20,470 C180,430 320,480 520,450 S880,400 1220,440" />
+      <path d="M-20,430 C200,380 380,440 560,400 S900,350 1220,390" />
+      <path d="M-20,392 C160,340 400,400 600,352 S920,305 1220,345" />
+      <path d="M-20,356 C220,300 420,360 640,310 S940,262 1220,300" />
+      <path d="M-20,322 C180,262 460,322 680,270 S960,225 1220,258" />
+      <path d="M-20,290 C240,228 480,286 720,234 S980,190 1220,220" />
+      <path d="M-20,262 C200,196 520,254 760,200 S1000,158 1220,186" />
+    </g>
+    <path d="M-20,238 C260,168 540,226 800,170 S1020,130 1220,156"
+          fill="none" stroke="rgba(255,106,44,0.55)" stroke-width="1.5" />
+    <g fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1">
+      <path d="M-20,214 C240,140 560,196 820,142 S1040,104 1220,128" />
+      <path d="M-20,192 C280,116 580,170 840,118 S1060,82 1220,104" />
+    </g>
+  </svg>
+  <canvas data-hero-canvas tabindex="-1"></canvas>
+</div>

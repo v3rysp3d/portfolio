@@ -1,0 +1,38 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin admin--narrow">
+  <a href="/admin/skills" class="backlink">← Skills</a>
+  <header class="admin__head">
+    <h1 class="admin__title"><%= mode === 'new' ? 'New skill' : 'Edit skill' %></h1>
+  </header>
+
+  <% if (errors._) { %><div class="form-error form-error--banner"><%= errors._ %></div><% } %>
+
+  <form method="post" action="<%= actionUrl %>" class="form form--card" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="field">
+      <label class="field__label" for="name">Name <span class="req">*</span></label>
+      <input class="input" id="name" name="name" value="<%= form.name || '' %>" required />
+      <% if (errors.name) { %><p class="form-error"><%= errors.name %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="category">Category</label>
+      <input class="input" id="category" name="category" value="<%= form.category || '' %>" placeholder="e.g. Languages" />
+      <p class="field__hint">Skills are grouped by category. Defaults to “General”.</p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="sortOrder">Sort order</label>
+      <input class="input input--sm" id="sortOrder" name="sortOrder" type="number" min="0" value="<%= form.sortOrder %>" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--accent"><%= mode === 'new' ? 'Add skill' : 'Save changes' %></button>
+      <a href="/admin/skills" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

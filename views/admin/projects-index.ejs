@@ -1,0 +1,52 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin">
+  <header class="admin__head admin__head--row">
+    <div>
+      <h1 class="admin__title">Projects</h1>
+      <p class="admin__subtitle"><%= projects.length %> total</p>
+    </div>
+    <a class="btn btn--accent" href="/admin/projects/new">+ New project</a>
+  </header>
+
+  <% if (projects.length === 0) { %>
+    <p class="empty">No projects yet. <a href="/admin/projects/new">Create your first</a>.</p>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="ta-num">#</th><th>Title</th><th>Category</th>
+            <th>Featured</th><th>Visible</th><th class="ta-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% projects.forEach(function (p) { %>
+            <tr>
+              <td class="muted ta-num"><%= p.sortOrder %></td>
+              <td>
+                <a class="data-table__title" href="/admin/projects/<%= p.id %>/edit"><%= p.title %></a>
+                <div class="data-table__slug">/projects/<%= p.slug %></div>
+              </td>
+              <td class="muted"><%= p.category || '—' %></td>
+              <td><% if (p.featured) { %><span class="pill pill--on">Featured</span><% } else { %><span class="pill">—</span><% } %></td>
+              <td><% if (p.visible) { %><span class="pill pill--on">Visible</span><% } else { %><span class="pill pill--off">Hidden</span><% } %></td>
+              <td class="ta-right">
+                <div class="row-actions">
+                  <a class="btn btn--ghost btn--sm" href="/projects/<%= p.slug %>" target="_blank" rel="noopener">View</a>
+                  <a class="btn btn--ghost btn--sm" href="/admin/projects/<%= p.id %>/edit">Edit</a>
+                  <form class="inline-form" method="post" action="/admin/projects/<%= p.id %>/delete" data-confirm="Delete “<%= p.title %>”? This cannot be undone.">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button class="btn btn--danger btn--sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

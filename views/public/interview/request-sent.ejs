@@ -1,0 +1,17 @@
+<%- include('../../partials/head', { nav: 'none', bodyClass: 'page-interview' }) %>
+
+<section class="auth">
+  <div class="auth__card animate-rise">
+    <a href="/" class="auth__brand" aria-label="Home">
+      <span class="monogram__mark"><%= helpers.initials(profile.name) %></span>
+    </a>
+    <h1 class="auth__title">Request received</h1>
+    <p class="auth__subtitle">
+      Thanks — your request to interview the AI version of <%= profile.name.split(' ')[0] %> has been sent
+      for review. If it's approved, you'll get a private interview link by email. No further action needed.
+    </p>
+    <a href="/" class="btn btn--ghost btn--block">Back to the portfolio</a>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>

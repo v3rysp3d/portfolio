@@ -1,0 +1,78 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin admin--narrow">
+  <header class="admin__head">
+    <h1 class="admin__title">Profile</h1>
+    <p class="admin__subtitle">The “about me” content shown across the site.</p>
+  </header>
+
+  <% if (errors._) { %><div class="form-error form-error--banner"><%= errors._ %></div><% } %>
+
+  <form method="post" action="/admin/profile" class="form form--card" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="name">Name <span class="req">*</span></label>
+        <input class="input" id="name" name="name" value="<%= form.name || '' %>" required />
+        <% if (errors.name) { %><p class="form-error"><%= errors.name %></p><% } %>
+      </div>
+      <div class="field">
+        <label class="field__label" for="location">Location</label>
+        <input class="input" id="location" name="location" value="<%= form.location || '' %>" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="headline">Headline <span class="req">*</span></label>
+      <input class="input" id="headline" name="headline" value="<%= form.headline || '' %>" maxlength="200" required />
+      <p class="field__hint">The one-line statement shown large on the home page.</p>
+      <% if (errors.headline) { %><p class="form-error"><%= errors.headline %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="bio">Bio</label>
+      <textarea class="input textarea" id="bio" name="bio" rows="8"><%= form.bio || '' %></textarea>
+      <p class="field__hint">Leave a blank line between paragraphs.</p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="email">Email</label>
+      <input class="input" id="email" name="email" type="email" value="<%= form.email || '' %>" />
+      <% if (errors.email) { %><p class="form-error"><%= errors.email %></p><% } %>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="githubUrl">GitHub URL</label>
+        <input class="input" id="githubUrl" name="githubUrl" value="<%= form.githubUrl || '' %>" placeholder="https://github.com/…" />
+        <% if (errors.githubUrl) { %><p class="form-error"><%= errors.githubUrl %></p><% } %>
+      </div>
+      <div class="field">
+        <label class="field__label" for="linkedinUrl">LinkedIn URL</label>
+        <input class="input" id="linkedinUrl" name="linkedinUrl" value="<%= form.linkedinUrl || '' %>" placeholder="https://linkedin.com/in/…" />
+        <% if (errors.linkedinUrl) { %><p class="form-error"><%= errors.linkedinUrl %></p><% } %>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field__label" for="websiteUrl">Website URL</label>
+        <input class="input" id="websiteUrl" name="websiteUrl" value="<%= form.websiteUrl || '' %>" placeholder="https://…" />
+        <% if (errors.websiteUrl) { %><p class="form-error"><%= errors.websiteUrl %></p><% } %>
+      </div>
+      <div class="field">
+        <label class="field__label" for="resumeUrl">Résumé URL</label>
+        <input class="input" id="resumeUrl" name="resumeUrl" value="<%= form.resumeUrl || '' %>" placeholder="https://… (PDF)" />
+        <% if (errors.resumeUrl) { %><p class="form-error"><%= errors.resumeUrl %></p><% } %>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--accent">Save profile</button>
+      <a href="/admin" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

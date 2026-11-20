@@ -1,0 +1,8 @@
+<%# One metric tile. Params: { tile: { value, label, sub?, src?, accent? }, delay? }
+    Server renders the final value; count-ups (when used) only decorate. %>
+<div class="stat-card <%= tile.accent ? 'stat-card--accent' : '' %> reveal" <% if (typeof delay !== 'undefined' && delay) { %>data-delay="<%= delay %>"<% } %>>
+  <span class="stat-card__value"><%= tile.value %></span>
+  <span class="stat-card__label"><%= tile.label %></span>
+  <% if (tile.sub) { %><span class="stat-card__sub"><%= tile.sub %></span><% } %>
+  <% if (tile.src) { %><span class="stat-card__src"><%= tile.src %></span><% } %>
+</div>

@@ -1,0 +1,45 @@
+<%- include('../partials/head', { nav: 'admin', bodyClass: 'page-admin' }) %>
+
+<section class="admin">
+  <header class="admin__head admin__head--row">
+    <div>
+      <h1 class="admin__title">Experience &amp; education</h1>
+      <p class="admin__subtitle"><%= experiences.length %> entries — work, education &amp; certifications</p>
+    </div>
+    <a class="btn btn--accent" href="/admin/experience/new">+ New entry</a>
+  </header>
+
+  <% if (experiences.length === 0) { %>
+    <p class="empty">No experience yet. <a href="/admin/experience/new">Add one</a>.</p>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th class="ta-num">#</th><th>Type</th><th>Title</th><th>Organisation</th><th>Period</th><th class="ta-right">Actions</th></tr>
+        </thead>
+        <tbody>
+          <% experiences.forEach(function (exp) { %>
+            <tr>
+              <td class="muted ta-num"><%= exp.sortOrder %></td>
+              <td><span class="pill"><%= exp.kind %></span></td>
+              <td><a class="data-table__title" href="/admin/experience/<%= exp.id %>/edit"><%= exp.role %></a></td>
+              <td class="muted"><%= exp.company %></td>
+              <td class="muted"><%= helpers.formatDateRange(exp.startDate, exp.endDate) || '—' %></td>
+              <td class="ta-right">
+                <div class="row-actions">
+                  <a class="btn btn--ghost btn--sm" href="/admin/experience/<%= exp.id %>/edit">Edit</a>
+                  <form class="inline-form" method="post" action="/admin/experience/<%= exp.id %>/delete" data-confirm="Delete this experience entry?">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button class="btn btn--danger btn--sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

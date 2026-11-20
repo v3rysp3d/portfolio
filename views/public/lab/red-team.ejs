@@ -1,0 +1,109 @@
+<%- include('../../partials/head', { nav: 'public', bodyClass: 'page-redteam' }) %>
+
+<%
+  const patched = allAttacks.filter((a) => a.status === 'patched').length;
+  const open = allAttacks.filter((a) => a.status === 'open').length;
+%>
+
+<section class="section section--top">
+  <p class="eyebrow reveal">
+    <span class="eyebrow__index">§RED-TEAM</span>
+    <span class="eyebrow__label">Adversarial eval log</span>
+  </p>
+  <h1 class="page-title reveal" data-delay="1">Breaking my own AI — in public.</h1>
+  <p class="page-subtitle reveal" data-delay="2">
+    Eval-harness findings, recorded pre-launch. Every entry maps to a versioned eval case and to
+    committed runs on <a href="/lab">/lab</a>; live attack attempts will be appended once the demo
+    has public traffic. Try any prompt yourself — the interview will block it, for free.
+  </p>
+  <div class="stat-cards reveal" data-delay="3">
+    <div class="stat-card">
+      <span class="stat-card__value"><%= allAttacks.length %></span>
+      <span class="stat-card__label">Attacks logged</span>
+      <span class="stat-card__src">src/data/redteam.ts</span>
+    </div>
+    <div class="stat-card stat-card--accent">
+      <span class="stat-card__value"><%= safety ? `${Math.round(safety.passRate * 100)}%` : '—' %></span>
+      <span class="stat-card__label">Safety pass rate</span>
+      <span class="stat-card__sub"><%= latestRun ? `latest run · ${latestRun.mode}` : 'no runs published' %></span>
+      <span class="stat-card__src">eval_runs.by_category.safety</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value"><%= patched %></span>
+      <span class="stat-card__label">Patched</span>
+      <span class="stat-card__src">status = patched</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value"><%= open %></span>
+      <span class="stat-card__label">Still open</span>
+      <span class="stat-card__src">status = open</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="rt-log">
+  <header class="section__head reveal">
+    <h2 class="section__title" id="rt-log"><span class="section__index">§01</span> Attack timeline</h2>
+    <a class="section__action" href="?sort=<%= sort === 'latest' ? 'oldest' : 'latest' %><%= activeCategory ? `&category=${activeCategory}` : '' %>">
+      Sorted: <%= sort.toUpperCase() %> — flip <span aria-hidden="true">↕</span>
+    </a>
+  </header>
+
+  <nav class="legend" aria-label="Filter attacks by category">
+    <a class="pill <%= !activeCategory ? 'is-active' : '' %>" href="?sort=<%= sort %>" aria-current="<%= !activeCategory ? 'true' : 'false' %>">all</a>
+    <% categories.forEach((cat) => { %>
+      <a class="pill <%= activeCategory === cat ? 'is-active' : '' %>" href="?category=<%= cat %>&sort=<%= sort %>" aria-current="<%= activeCategory === cat ? 'true' : 'false' %>"><%= cat %></a>
+    <% }) %>
+  </nav>
+
+  <div class="attack-grid" data-attack-grid>
+    <% attacks.forEach((a, i) => { %>
+      <article class="attack-card <%= a.status === 'open' ? 'attack-card--open' : '' %> reveal" <% if (i < 5) { %>data-delay="<%= Math.min(i + 1, 5) %>"<% } %> id="<%= a.id %>" data-cat="<%= a.category %>">
+        <div class="attack-card__head">
+          <h3 class="attack-card__id">#<%= a.id %> · <%= a.category %></h3>
+          <div class="attack-card__verdicts">
+            <% if (a.defeated) { %>
+              <span class="verdict-badge verdict-badge--defeated">defeated</span>
+              <span class="verdict-arrow" aria-hidden="true">→</span>
+            <% } %>
+            <% if (a.status === 'patched') { %>
+              <span class="verdict-badge verdict-badge--patched">patched</span>
+            <% } else if (a.status === 'open') { %>
+              <span class="verdict-badge verdict-badge--open">open</span>
+            <% } else { %>
+              <span class="verdict-badge">monitoring</span>
+            <% } %>
+          </div>
+        </div>
+        <pre class="attack__prompt"><code>&gt; <%= a.prompt %></code></pre>
+        <div class="attack-card__rows">
+          <% if (a.defeated) { %>
+            <div class="attack-row"><span class="attack-row__k">beat</span><span class="attack-row__v"><span class="version-tag">‹<%= a.defeated %>›</span> — <%= a.beat %></span></div>
+          <% } else { %>
+            <div class="attack-row"><span class="attack-row__k">beat</span><span class="attack-row__v"><%= a.beat %></span></div>
+          <% } %>
+          <div class="attack-row"><span class="attack-row__k">fix</span><span class="attack-row__v"><%= a.fix %></span></div>
+          <div class="attack-row">
+            <span class="attack-row__k">proof</span>
+            <span class="attack-row__v">
+              eval case <code><%= a.evalCaseId %></code>
+              <% if (a.patched) { %> · <span class="badge badge--approved">pass</span> in <span class="version-tag">‹<%= a.patched %>›</span><% } else if (a.status === 'monitoring') { %> · <span class="badge badge--pending">flag-only</span><% } %>
+            </span>
+          </div>
+        </div>
+        <div class="attack-card__actions">
+          <a class="btn btn--sm btn--ghost" href="/interview?attack=<%= a.id %>">Try it in the live chat <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<section class="section">
+  <p class="lab-foot reveal">
+    APPEND-ONLY — entries are never edited away; a regression reopens its card. Attacks cost $0
+    to attempt: guards run before any model call. Full method on <a href="/lab">/lab</a>.
+  </p>
+</section>
+
+<%- include('../../partials/footer') %>

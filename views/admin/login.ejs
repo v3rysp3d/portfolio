@@ -1,0 +1,32 @@
+<%- include('../partials/head', { nav: 'none', bodyClass: 'page-login' }) %>
+
+<section class="auth">
+  <div class="auth__card animate-rise">
+    <a href="/" class="auth__brand" aria-label="Home">
+      <span class="monogram__mark"><%= helpers.initials(profile.name) %></span>
+    </a>
+    <h1 class="auth__title">Admin sign in</h1>
+    <p class="auth__subtitle">Manage projects, experience and profile.</p>
+
+    <% if (errors._) { %>
+      <div class="form-error form-error--banner"><%= errors._ %></div>
+    <% } %>
+
+    <form method="post" action="/admin/login" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="field">
+        <label class="field__label" for="username">Username</label>
+        <input class="input" type="text" id="username" name="username" value="<%= values.username %>" autocomplete="username" required autofocus />
+      </div>
+      <div class="field">
+        <label class="field__label" for="password">Password</label>
+        <input class="input" type="password" id="password" name="password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn btn--accent btn--block">Sign in</button>
+    </form>
+
+    <a href="/" class="auth__back">← Back to site</a>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,132 @@
+/* ============================================================================
+   Page-specific styles (home chapters, CV, lab, red-team). Grows as pages
+   are rebuilt; shared components stay in core.css / components-lab.css.
+   ========================================================================== */
+
+/* ── Hero visual layering (blueprint terrain) ──────────────────────────── */
+.hero { position: relative; overflow: hidden; }
+.hero__inner, .hero__ticks { position: relative; z-index: 1; }
+.hero-visual { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.hero-visual__fallback {
+  position: absolute;
+  inset: auto 0 -4% 0;
+  width: 100%;
+  height: 72%;
+  opacity: 0.9;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+}
+.hero-visual canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.hero-visual canvas.is-live { opacity: 1; }
+
+/* ── CV page ───────────────────────────────────────────────────────────── */
+.cv-header__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+  margin-top: var(--space-4);
+}
+.cv-header__headline { color: var(--text-2); font-size: clamp(1.05rem, 1.8vw, 1.3rem); margin-top: var(--space-3); }
+.cv-header__links { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-6); margin-top: var(--space-5); }
+.cv-header__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: var(--space-5); }
+.cv-header__stats { margin-top: var(--space-6); }
+
+/* Timeline entries share a two-column grid with a drawn spine on the left
+   of the body column. */
+.cv-timeline { display: grid; gap: var(--space-6); position: relative; }
+.cv-entry { display: grid; grid-template-columns: 11rem 1fr; gap: var(--space-5); position: relative; }
+.cv-entry__period {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 0.3rem;
+}
+.cv-entry__body { position: relative; padding-left: var(--space-5); border-left: 1px solid var(--line-2); }
+.cv-entry__body::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 0.42rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid var(--line-3);
+}
+.cv-entry:first-child .cv-entry__body::before { background: var(--accent); border-color: var(--accent); }
+.cv-entry__role { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; letter-spacing: -0.01em; }
+.cv-entry__org { margin-top: 0.2rem; color: var(--text-2); font-size: 0.95rem; }
+.cv-entry__loc { color: var(--muted); }
+.cv-entry__summary { margin-top: 0.55rem; color: var(--text-2); max-width: 62ch; }
+.cv-entry__link {
+  display: inline-block;
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cv-entry__link:hover { color: var(--accent); }
+@media (max-width: 760px) {
+  .cv-entry { grid-template-columns: 1fr; gap: var(--space-2); }
+  .cv-entry__period { padding-top: 0; }
+}
+
+/* ── Home: §AI teaser band ─────────────────────────────────────────────── */
+.lab-teaser__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  margin-top: var(--space-4);
+}
+.lab-teaser__title em { font-style: italic; color: var(--accent); }
+.lab-teaser__lead { color: var(--text-2); max-width: 52ch; margin-top: var(--space-4); }
+.lab-teaser .proof-strip { margin-top: 0; border-top: none; }
+
+/* ── Home: about pull-quote (words staggered by JS on scroll) ──────────── */
+.pullquote {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  max-width: 28ch;
+  margin-bottom: var(--space-6);
+}
+.pullquote::before { content: "“ "; color: var(--accent); }
+.pullquote .word { display: inline-block; }
+
+/* ── Home: capabilities ticker ─────────────────────────────────────────── */
+/* Static wrapped tag list by default; motion-capable visitors get an
+   infinite marquee (duplicate row is aria-hidden decoration). */
+.ticker { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+.ticker__row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; }
+.ticker__row--dup { display: none; }
+html.motion-ok .ticker { overflow: hidden; flex-wrap: nowrap; }
+html.motion-ok .ticker__row { flex-wrap: nowrap; flex: 0 0 auto; animation: ticker-scroll 30s linear infinite; }
+html.motion-ok .ticker__row--dup { display: flex; }
+html.motion-ok .ticker--reverse .ticker__row { animation-direction: reverse; }
+html.motion-ok .ticker:hover .ticker__row { animation-play-state: paused; }
+@keyframes ticker-scroll { to { transform: translateX(calc(-100% - 0.5rem)); } }
+
+.cv-projects { display: grid; gap: var(--space-6); }
+.cv-project__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+.cv-project__title { font-family: var(--font-display); font-weight: 500; font-size: 1.2rem; }
+.cv-project__title:hover { color: var(--accent); }
+.cv-project__meta { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.cv-project__summary { margin-top: 0.4rem; color: var(--text-2); max-width: 68ch; }
+.cv-project .tech-list { margin-top: 0.6rem; }

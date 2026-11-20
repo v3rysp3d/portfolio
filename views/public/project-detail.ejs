@@ -1,0 +1,55 @@
+<%- include('../partials/head', { nav: 'public', bodyClass: 'page-project' }) %>
+
+<article class="project">
+  <a href="/projects" class="backlink">← All projects</a>
+
+  <header class="project__header animate-rise">
+    <p class="eyebrow">
+      <% if (project.category) { %><span class="eyebrow__label"><%= project.category %></span><% } %>
+      <% if (!project.visible) { %><span class="badge badge--hidden">Hidden — admin preview</span><% } %>
+    </p>
+    <h1 class="project__title"><%= project.title %></h1>
+    <p class="project__summary"><%= project.summary %></p>
+
+    <dl class="project__meta">
+      <% if (project.role) { %><div class="project__meta-item"><dt>Role</dt><dd><%= project.role %></dd></div><% } %>
+      <% if (project.period) { %><div class="project__meta-item"><dt>Period</dt><dd><%= project.period %></dd></div><% } %>
+    </dl>
+
+    <% if (project.demoUrl || project.repoUrl) { %>
+      <div class="project__links">
+        <% if (project.demoUrl) { %>
+          <a class="btn btn--accent" href="<%= project.demoUrl %>" target="_blank" rel="noopener noreferrer">Live demo ↗</a>
+        <% } %>
+        <% if (project.repoUrl) { %>
+          <a class="btn btn--ghost" href="<%= project.repoUrl %>" target="_blank" rel="noopener noreferrer">Source ↗</a>
+        <% } %>
+      </div>
+    <% } %>
+  </header>
+
+  <% if (project.imageUrl) { %>
+    <figure class="project__media animate-rise">
+      <img src="<%= project.imageUrl %>" alt="<%= project.title %> preview" loading="lazy" />
+    </figure>
+  <% } %>
+
+  <div class="project__body">
+    <div class="prose">
+      <% if (project.description) { %>
+        <%- helpers.paragraphsHtml(project.description) %>
+      <% } else { %>
+        <p><%= project.summary %></p>
+      <% } %>
+    </div>
+
+    <aside class="project__aside">
+      <h2 class="aside__title">Tech stack</h2>
+      <ul class="tag-list">
+        <% project.techStack.forEach(function (t) { %><li class="tag"><%= t %></li><% }); %>
+      </ul>
+    </aside>
+  </div>
+</article>
+
+<%- include('../partials/footer') %>

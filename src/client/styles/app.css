@@ -1,0 +1,13 @@
+/*
+ * Design-system entry. esbuild bundles this @import chain into one hashed
+ * stylesheet — the browser fetches a single file. Order matters:
+ * tokens → core library → atmosphere upgrades → showcase components →
+ * page styles → motion (motion last so its reduced-motion kill block wins).
+ */
+@import './fonts.css';
+@import './tokens.css';
+@import './core.css';
+@import './atmosphere.css';
+@import './components-lab.css';
+@import './pages.css';
+@import './motion.css';
